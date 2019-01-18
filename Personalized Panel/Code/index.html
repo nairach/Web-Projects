@@ -1,0 +1,181 @@
+<html>
+<head>
+	<style>
+
+      table, th, td{
+      margin-left: auto;
+      margin-right: auto;
+      border: 3px solid pink;
+      border-collapse: collapse;
+      border-spacing: 50px 0;
+      column-width: 200px;
+      text-align: center;
+      }
+
+
+	.information {
+		padding: 30px;
+		position: absolute;
+		bottom: 0;
+		top: 50px;
+		left: 20%;
+		color: lightcoral;
+
+	}
+
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script>
+    	//Gets calculation prompt
+    	function displayCalc(){
+    		//Create URL to calculation page
+    		var URL = "http://localhost:8080/calculation";
+
+    		//Construct AJAX request to localhost
+    		$.ajax({
+    			type: "GET",
+    			url: URL,
+    			dataType: "html",
+    			data:"{}",
+				success : function(msg){
+					$("#current").html(msg);
+				},
+				error: function(jgXHR, textStatus,errorThrown){
+					alert("Error: " + textStatus + " " + errorThrown);
+				}
+    		});
+    	}
+    	//Gets and displays factorial or summation result to calculation page
+    	function getCalc(){
+    			//variables set to data using json 
+				var seed = $("#seed").val();
+				var option = $("#selectionField").val(); 
+				var URL = "http://localhost:8080/"+option+"?n="+seed;				
+				//construct ajax request to localhost
+				$.ajax(
+				{
+					//bring back data from the server side 
+					type: "GET",
+					//sets address to URL provided above with the respective option
+					url: URL,
+					//format type that we're sending to server 
+					contentType:"application/json; charset=utf-8",
+					//value that the user has entered 
+					data: 
+					{
+						"seed": seed
+					},
+					//allows browser to interpret response as html
+					dataType: "html",
+					//success message
+					success: function(msg)
+					{
+						$("#calc_output").html(msg);
+					},
+					//error message
+					error: function(jgXHR, textStatus,errorThrown)
+					{
+						alert("Error: " + textStatus + " " + errorThrown);
+					}
+				});
+    	}
+
+    	//Gets and displays weather prompt on weather page
+    	function displayWeather(){
+
+    		//create URL to weather page
+    		var URL = "http://localhost:8080/weather";
+
+    		//create ajax request to localhost 
+    		$.ajax({
+    			type: "GET",
+    			url: URL,
+    			data: "{}",
+    			dataType: "html",
+    			success: function(msg){
+    				$("#current").html(msg);
+    			},
+
+    			error: function(jgXHR, textStatus,errorThrown){
+					alert("Error: " + textStatus + " " + errorThrown);
+				}
+    		});
+    	}
+
+    	//Gets and displays weather data (table, forecast, ect.) on weather page
+    	function requestWeather(){
+      		var zip = $("#zipcode").val();
+      		params = {
+      			city: zip
+      		};
+      		//create URL to weather page
+    		var URL = "http://localhost:8080/getWeather";
+    		$.ajax({
+    			type: "POST",
+    			url: URL,
+    			data: params,
+    			dataType: "text",
+    			success: function(msg){
+    				$("#myDiv").html(msg);
+    			},
+    			error: function(jgXHR, textStatus,errorThrown){
+					alert("Error: " + textStatus + " " + errorThrown);
+				}
+    		});
+    	}
+
+    </script> 
+</head>
+<body>
+
+	<div data-role="panel" id="left-panel" data-theme="c">
+		<ul data-role="listview" data-theme="d">
+			<li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
+			<li data-icon= "home"><a href="#" onClick = "window.location.reload();">Home</a></li>
+			<li data-icon= "info-circle"><a href="#" onClick= "displayCalc()" >Calculator</a></li>
+			<li data-icon= "cloud"><a href="#" onClick = "displayWeather()" >Weather</a></li>
+		</ul> 
+	</div>
+
+	<div data-role="header" data-position="fixed">
+		<h1>CS 275 Web and Mobile App Development</h1>
+		<a href="#left-panel" data-icon="bars" data-shadow="false" data-iconshadow="false">Menu</a>
+	</div><!-- header -->
+
+	<div class="content" id="current">
+		<div class="information">
+			<h2 align="center">Welcome to Assignment 4!</h2>
+			<p align="center">Description of lab 4</p>
+			<ol type="1" >
+				<li>Allow for multiple pages with a mixture of static and dynamically generated content.</li>
+				<li>Begin applying good software design principles by segmenting logic into their own modules.</li>
+				<li>Get experience playing with Nodejs emitters.</li>
+				<li>Create jQuery Mobile menus.</li>
+			</ol>
+			<p>This lab incorporates the content and concepts of labs two and three. Here's a quick refresher on what each lab does</p>
+			<h3>Lab 2</h3>
+			<ul style="list-style-type: circle">
+			<li>The purpose of this assignment is learn how to utilize jQuery and Ajax to develop a web page to invoke the Weather Wunderground web service and parse it’s JSON response.</li>
+			</ul>
+			<h3>Lab 3</h3>
+			<ul style="list-style-type: circle">
+				<li>The purpose of this assignment is two-fold</li>
+					<ol>
+						<li> Set up and test your server side environment</li>
+						<li>Get acquainted with Nodejs basics, including interactions between clients and server along with the development of a simple dynamic web service.</li>
+					</ol>
+			</ul>
+			<p>To use the site, simply navigate through the links presented in the menu. The home link will take you back home, 
+			the calculator link will take you to the page where you can calculate the sum/factorial of numbers, and the weather link will take you
+			to the weather page where you enter in a zipcode to get the hourly forecast for the next five days </p>
+		</div> <!-- information -->
+	</div> <!-- content -->
+	<div data-role="footer" data-position="fixed">
+		<h1>Naimisha Rachakonda</h1>
+	</div>
+</body>
+</html>
